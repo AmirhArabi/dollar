@@ -25,8 +25,7 @@ async def fetch_tgju_dollar_price():
             price = result[0].text if result else "Not found"
             
             
-            if price_element:
-                price = price_element.get_text(strip=True)
+            if price:
                 return {
                     "success": True,
                     "price": price,
