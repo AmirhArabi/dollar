@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 import httpx
-from bs4 import BeautifulSoup
+from lxml import html
 import os
 from datetime import datetime
 
@@ -18,14 +18,12 @@ async def fetch_tgju_dollar_price():
             response = await client.get(url, headers=headers, timeout=10)
             response.raise_for_status()
             
-            soup = BeautifulSoup(response.text, 'html.parser')
+            tree = html.fromstring(response.content)
+
+            xpath_expr = '/html/body/main/div[1]/div[1]/div[1]/div/div[1]/div[3]/div[1]/span[2]'
+            result = tree.xpath(xpath_expr)
+            price = result[0].text if result else "Not found"
             
-            # روش ۱: جستجوی کلاس info-value (ممکن است نیاز به به‌روزرسانی داشته باشد)
-            price_element = soup.select_one('.info-value > span')
-            
-            # روش ۲: جستجوی itemprop (اگر موجود باشد)
-            if not price_element:
-                price_element = soup.select_one('[itemprop="price"]')
             
             if price_element:
                 price = price_element.get_text(strip=True)
