@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dollar Price API Documentation</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #eee;
+    }
+    h1 {
+      color: #2c3e50;
+    }
+    .card {
+      background: white;
+      border-radius: 8px;
+      padding: 25px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .endpoint {
+      background: #f8f9fa;
+      padding: 15px;
+      border-left: 4px solid #3498db;
+      margin: 15px 0;
+      font-family: monospace;
+    }
+    .method {
+      display: inline-block;
+      padding: 3px 10px;
+      background: #3498db;
+      color: white;
+      border-radius: 3px;
+      font-weight: bold;
+      margin-right: 10px;
+    }
+    .price-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #2ecc71;
+      color: white;
+      padding: 20px;
+      border-radius: 8px;
+      margin-top: 30px;
+    }
+    .price {
+      font-size: 2.5rem;
+      font-weight: bold;
+    }
+    .updated {
+      font-size: 0.9rem;
+      opacity: 0.9;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    code {
+      background: #f8f9fa;
+      padding: 2px 5px;
+      border-radius: 3px;
+      font-family: monospace;
+    }
+    .brand {
+      color: #F9C603;
+      font-weight: bold;
+    }
+
+    .btn {
+      color: #0E1E37;
+      margin: 10px;
+    }
+    .btn:before, .btn:after{
+      opacity: 0;
+      transition: all 0.3s ease;	
+      font-size: 20px;
+    }
+    .btn:before{
+      content: '[';
+    }
+    .btn:after{
+      content: ']';
+    }
+
+    .btn:hover:before{
+      margin-right: 10px;
+      content: '[';
+      -webkit-transform: translateX(20px);
+      -moz-transform: translateX(20px);
+      transform: translateX(20px);
+      opacity: 1;
+    }
+    .btn:hover:after{
+      margin-left: 10px;
+      content: ']';
+      -webkit-transform: translateX(-20px);
+      -moz-transform: translateX(-20px);
+      transform: translateX(-20px);
+      opacity: 1;
+    }
+    
+
+    
+
+  </style>
+</head>
+<body>
+  <header>
+    <h1> <span class="brand"> CharkhARZ </span> API Documentation</h1>
+    <p>A simple public API to fetch free exchange rates (in IRR) from tgju.org</p>
+  </header>
+
+      <div class="price-container">
+        <div>
+          <div>Current Dollar Price (IRR)</div>
+          <div class="price" id="price">Loading...</div>
+        </div>
+        <div class="updated" id="updated"></div>
+      </div>
+
+      <div class="card">
+        <h2>About This API</h2>
+        <p>This API fetches data from tgju.org and provides it in a simple JSON format. Data is cached for 60 minutes.</p>
+        <p><strong>Source Code:</strong> <a class="btn" href="https://github.com/AmirhArabi/dollar.git" target="_blank">GitHub Repository</a></p>
+        <p><strong>License:</strong> MIT</p>
+      </div>
+
+  <div class="card">
+    <h2>API Endpoints</h2>
+    
+    <div class="endpoint">
+      <span class="method">GET</span> /api/dollar
+    </div>
+    <p>Returns the current USD to IRR exchange rate</p>
+    
+    <h3>Parameters</h3>
+    <table>
+      <tr>
+        <th>Parameter</th>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+      <tr>
+        <td><code>pretty</code></td>
+        <td>boolean</td>
+        <td>When set to <code>true</code>, returns formatted JSON</td>
+      </tr>
+    </table>
+    
+    <h3>Response Example</h3>
+    <pre>{
+  "success": true,
+  "price": "42,050",
+  "currency": "IRR",
+  "last_updated": "1402-05-15 14:30:45",
+  "source": "tgju.org"
+}</pre>
+  </div>
+
+  <div class="card">
+    <h2>How to Use</h2>
+    <h3>JavaScript Fetch</h3>
+    <pre>fetch('https://charkharz.vercel.app/api/dollar')
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      console.log('Current price:', data.price);
+    }
+  });</pre>
+    
+    <h3>cURL</h3>
+    <pre>curl -X GET 'https://charkharz.vercel.app/api/dollar?pretty=true'</pre>
+    
+    <h3>Python</h3>
+    <pre>import requests
+
+response = requests.get('https://charkharz.vercel.app/api/dollar')
+data = response.json()
+print(data['price'])</pre>
+  </div>
+
+  <script>
+    fetch("/api/dollar")
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          document.getElementById("price").textContent = data.price;
+          document.getElementById("updated").textContent = "Last updated: " + data.last_updated;
+        } else {
+          document.getElementById("price").textContent = "API Error";
+        }
+      })
+      .catch(err => {
+        document.getElementById("price").textContent = "Connection Error";
+      });
+  </script>
+</body>
+</html>

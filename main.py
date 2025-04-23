@@ -3,6 +3,7 @@ import os
 from datetime import datetime, timedelta
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse, Response
+from starlette.responses import FileResponse
 import httpx
 from lxml import html
 import jdatetime 
@@ -83,7 +84,7 @@ async def get_price(request: Request):
             return make_response(cache)
         return JSONResponse({"success": False, "error": str(e)}, status_code=500)
 
-@app.get("/")
+@app.get("/api")
 async def root():
     return JSONResponse(
         content={
@@ -98,3 +99,8 @@ async def root():
     )
 
 
+ 
+@app.get("/")
+async def read_index():
+    return FileResponse('templates/index.html')
+     
